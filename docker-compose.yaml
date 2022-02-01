@@ -1,0 +1,45 @@
+version: "3"
+services:
+
+  # Gateway requests to backend services
+  gateway:
+    image: nginx:latest
+    container_name: api_gateway
+    depends_on:
+      - jobs-app
+      - admin-app
+      - search-app
+    volumes:
+    - ./gateway/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+    - 9090:9090
+
+  # Jobs app
+  jobs-app:
+    image: jobs-app
+    container_name: jobs-app
+    build:
+      context: ./jobs_app
+    ports:
+      - 8080:8080
+    restart: on-failure
+
+  # Admin app
+  admin-app:
+    image: admin-app
+    container_name: admin-app
+    build:
+      context: ./admin_app
+    ports:
+      - 5056:5056
+    restart: on-failure
+
+  # Search app
+  search-app:
+    image: search-app
+    container_name: search-app
+    build:
+      context: ./search_app
+    ports:
+      - 5000:5000
+    restart: on-failure
